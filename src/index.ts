@@ -1,9 +1,8 @@
-import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
 import Stripe from "stripe";
-import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import express from "express";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -34,16 +33,20 @@ app.get("/subscribe", async (req, res) => {
   let priceId;
 
   switch (tier.toLowerCase()) {
+    case "starter":
+      priceId = "prod_RcSk7O75b2np4b";
+      break;
+
     case "startups":
-      priceId = "price_1QhhIcRuTMaRJMyaUj98FtA4";
+      priceId = "prod_RcSlQXF8IGq56o";
       break;
 
     case "advanced":
-      priceId = "price_1QhhIqRuTMaRJMyaWcjhHuQl";
+      priceId = "prod_RcSlLkybzGY3Wk";
       break;
 
     case "enterprise":
-      priceId = "price_1QhhJ4RuTMaRJMyaUS0ciSed";
+      priceId = "prod_RcSmzHnTKigXKP";
       break;
 
     default:
