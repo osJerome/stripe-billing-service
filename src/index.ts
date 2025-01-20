@@ -26,32 +26,39 @@ app.get("/subscribe", async (req, res) => {
   const tier = req.query.tier as string;
   console.log(tier);
 
+  type Tier = "starter" | "startup" | "advanced" | "enterprise";
+
+  const tiers: Record<Tier, { productId: string; priceId: string }> = {
+    starter: {
+      productId: "prod_RcSk7O75b2np4b",
+      priceId: "price_1QjDolRuTMaRJMyauUcmHHN0",
+    },
+    startup: {
+      productId: "prod_RcSlQXF8IGq56o",
+      priceId: "price_1QjDpYRuTMaRJMya4fDFLTBZ",
+    },
+    advanced: {
+      productId: "prod_RcSlLkybzGY3Wk",
+      priceId: "price_1QjDqLRuTMaRJMyaraHj6HuQ",
+    },
+    enterprise: {
+      productId: "prod_RcSmzHnTKigXKP",
+      priceId: "price_1QjDqvRuTMaRJMyaZT46Mtbl",
+    },
+  };
+
   if (!tier) {
     return res.send("Subscription tier not found");
   }
 
-  let priceId;
+  const normalizedTier = tier.toLowerCase() as Tier;
+  const selectedTier = tiers[normalizedTier];
 
-  switch (tier.toLowerCase()) {
-    case "starter":
-      priceId = "prod_RcSk7O75b2np4b";
-      break;
-
-    case "startups":
-      priceId = "prod_RcSlQXF8IGq56o";
-      break;
-
-    case "advanced":
-      priceId = "prod_RcSlLkybzGY3Wk";
-      break;
-
-    case "enterprise":
-      priceId = "prod_RcSmzHnTKigXKP";
-      break;
-
-    default:
-      return res.send("Subscription tier not found");
+  if (!selectedTier) {
+    return res.send("Subscription tier not found");
   }
+
+  const priceId = selectedTier.priceId;
 
   try {
     const session = await stripe.checkout.sessions.create({
