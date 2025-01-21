@@ -1,3 +1,4 @@
+import { config } from "../config/config";
 import { Request, Response } from "express";
 import { StripeService } from "../services/stripe.service";
 
@@ -35,7 +36,7 @@ export class SubscriptionController {
   handleSuccess = async (req: Request, res: Response) => {
     const sessionId = req.query.session_id as string;
     const session = await this.stripeService.retrieveSession(sessionId);
-    res.redirect(`${process.env.BASE_URL}/customers/${session.customer}`);
+    res.redirect(`${config.baseUrl}/customers/${session.customer}`);
   };
 
   handleCustomerPortal = async (req: Request, res: Response) => {

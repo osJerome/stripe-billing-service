@@ -3,12 +3,13 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
+import { config } from "./config/config";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+const port = config.port || 3000;
+const stripe = new Stripe(config.stripeSecretKey as string, {
   apiVersion: "2022-11-15",
 });
 
@@ -69,8 +70,8 @@ app.get("/subscribe", async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FALLBACK_URL}`,
+      success_url: `${config.baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${config.fallbackUrl}`,
     });
 
     console.log(session);
@@ -97,7 +98,7 @@ app.get("/success", async (req, res) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId);
   console.log(session);
 
-  res.redirect(`${process.env.BASE_URL}}/customers/${session.customer}`);
+  res.redirect(`${config.baseUrl}/customers/${session.customer}`);
 });
 
 // Customer portal route
@@ -105,7 +106,7 @@ app.get("/customers/:customerId", async (req, res) => {
   try {
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: req.params.customerId,
-      return_url: `${process.env.FALLBACK_URL}`,
+      return_url: `${config.fallbackUrl}`,
     });
 
     res.redirect(portalSession.url);
@@ -127,7 +128,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig as string,
-      process.env.STRIPE_WEBHOOK_SECRET_KEY as string
+      config.stripeSecretKey as string
     );
   } catch (err) {
     console.error(`Webhook Error: ${err}`);
@@ -155,5 +156,5 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on ${process.env.BASE_URL}`);
+  console.log(`Server is running on ${config.baseUrl}`);
 });
