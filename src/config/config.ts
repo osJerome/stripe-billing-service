@@ -7,7 +7,7 @@ export const config = {
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET_KEY as string,
   baseUrl: process.env.BASE_URL,
   fallbackUrl: process.env.FALLBACK_URL,
-  corsOrigin: "http://localhost:5173",
+  corsOrigin: process.env.FALLBACK_URL,
   stripePrices: {
     startups: "price_1QhhIcRuTMaRJMyaUj98FtA4",
     advanced: "price_1QhhIqRuTMaRJMyaWcjhHuQl",

@@ -35,7 +35,7 @@ export class SubscriptionController {
   handleSuccess = async (req: Request, res: Response) => {
     const sessionId = req.query.session_id as string;
     const session = await this.stripeService.retrieveSession(sessionId);
-    res.redirect(`http://localhost:3000/customers/${session.customer}`);
+    res.redirect(`${process.env.BASE_URL}/customers/${session.customer}`);
   };
 
   handleCustomerPortal = async (req: Request, res: Response) => {

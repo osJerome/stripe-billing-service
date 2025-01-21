@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2022-11-15",
 });
 
-app.use(
+app.use(  
   cors({
     origin: "*",
     methods: ["GET", "POST", "OPTIONS"],
@@ -97,7 +97,7 @@ app.get("/success", async (req, res) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId);
   console.log(session);
 
-  res.redirect(`http://localhost:3000/customers/${session.customer}`);
+  res.redirect(`${process.env.BASE_URL}}/customers/${session.customer}`);
 });
 
 // Customer portal route
@@ -155,5 +155,5 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on ${process.env.BASE_URL}`);
 });
