@@ -10,7 +10,7 @@ export class StripeService {
     });
   }
 
-  async createCheckoutSession(tier: string) {
+  async createCheckoutSession(tier: string, fallbackUrl?: string) {
     const priceId = this.getPriceIdForTier(tier);
     if (!priceId) throw new Error("Invalid subscription tier");
 
@@ -18,8 +18,25 @@ export class StripeService {
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${config.baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${config.fallbackUrl}`,
+      cancel_url: fallbackUrl || config.fallbackUrl,
     });
+  }
+
+  async cancelSubscription(subscriptionId: string) {
+    return this.stripe.subscriptions.cancel(subscriptionId);
+  }
+
+  async getSubscriptionDetails(sessionId: string) {
+    const session = await this.stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["subscription", "customer"],
+    });
+
+    return {
+      subscription: session.subscription,
+      customer: session.customer,
+      status: session.status,
+      paymentStatus: session.payment_status,
+    };
   }
 
   async retrieveSession(sessionId: string) {

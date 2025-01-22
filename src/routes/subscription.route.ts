@@ -13,6 +13,14 @@ router.get(
   "/customers/:customerId",
   subscriptionController.handleCustomerPortal
 );
+router.delete(
+  "/subscriptions/:subscriptionId",
+  subscriptionController.cancelSubscription
+);
+router.get(
+  "/subscriptions/session/:sessionId",
+  subscriptionController.getSubscriptionDetails
+);
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }),

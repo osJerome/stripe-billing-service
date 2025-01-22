@@ -33,6 +33,45 @@ export class SubscriptionController {
     }
   };
 
+  cancelSubscription = async (req: Request, res: Response) => {
+    const subscriptionId = req.params.subscriptionId;
+
+    if (!subscriptionId) {
+      return res.status(400).send("Subscription ID is required");
+    }
+
+    try {
+      const canceledSubscription = await this.stripeService.cancelSubscription(
+        subscriptionId
+      );
+      res.json(canceledSubscription);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send("An error occurred while canceling the subscription");
+    }
+  };
+
+  getSubscriptionDetails = async (req: Request, res: Response) => {
+    const sessionId = req.params.sessionId;
+
+    if (!sessionId) {
+      return res.status(400).send("Session ID is required");
+    }
+
+    try {
+      const subscriptionDetails =
+        await this.stripeService.getSubscriptionDetails(sessionId);
+      res.json(subscriptionDetails);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send("An error occurred while retrieving subscription details");
+    }
+  };
+
   handleSuccess = async (req: Request, res: Response) => {
     const sessionId = req.query.session_id as string;
     const session = await this.stripeService.retrieveSession(sessionId);
