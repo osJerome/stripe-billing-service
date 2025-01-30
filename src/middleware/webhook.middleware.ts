@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { StripeService } from "../services/stripe.service";
 
 export class WebhookMiddleware {
@@ -16,22 +16,22 @@ export class WebhookMiddleware {
 
       switch (event.type) {
         case "checkout.session.completed":
-          console.log("New Subscription started!", event.data);
+          console.log("✅ New Subscription started!", event.data.object);
           break;
         case "invoice.paid":
-          console.log("Invoice paid", event.data);
+          console.log("✅ Invoice paid", event.data.object);
           break;
         case "invoice.payment_failed":
-          console.log("Invoice payment failed!", event.data);
+          console.log("❌ Invoice payment failed!", event.data.object);
           break;
         case "customer.subscription.updated":
-          console.log("Subscription updated!", event.data);
+          console.log("🔄 Subscription updated!", event.data.object);
           break;
         default:
-          console.log(`Unhandled event type ${event.type}`);
+          console.log(`⚠️ Unhandled event type: ${event.type}`);
       }
 
-      res.send();
+      res.json({ received: true });
     } catch (err) {
       console.error(`Webhook Error: ${err}`);
       return res.status(400).send(`Webhook Error: ${err}`);
