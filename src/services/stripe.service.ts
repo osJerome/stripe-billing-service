@@ -50,9 +50,9 @@ export class StripeService {
     });
   }
 
-  verifyWebhookSignature(payload: Buffer, signature: string) {
+  verifyWebhookSignature(rawBody: Buffer, signature: string) {
     return this.stripe.webhooks.constructEvent(
-      payload,
+      rawBody,
       signature,
       config.stripeWebhookSecret
     );
