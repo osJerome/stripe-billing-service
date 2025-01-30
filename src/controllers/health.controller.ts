@@ -19,7 +19,6 @@ export class HealthController {
 
     try {
       res.status(200).json(healthCheck);
-      res.send(healthCheck);
     } catch (error) {
       healthCheck.message = "Error";
       res.status(503).json(healthCheck);

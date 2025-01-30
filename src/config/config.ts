@@ -9,8 +9,9 @@ export const config = {
   fallbackUrl: process.env.FALLBACK_URL,
   corsOrigin: process.env.FALLBACK_URL,
   stripePrices: {
-    startups: "price_1QhhIcRuTMaRJMyaUj98FtA4",
-    advanced: "price_1QhhIqRuTMaRJMyaWcjhHuQl",
-    enterprise: "price_1QhhJ4RuTMaRJMyaUS0ciSed",
+    starter: "price_1QjDolRuTMaRJMyauUcmHHN0",
+    startup: "price_1QjDpYRuTMaRJMya4fDFLTBZ",
+    advanced: "price_1QjDqLRuTMaRJMyaraHj6HuQ",
+    enterprise: "price_1QjDqvRuTMaRJMyaZT46Mtbl",
   },
 };
