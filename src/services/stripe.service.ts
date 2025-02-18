@@ -22,6 +22,13 @@ export class StripeService {
     });
   }
 
+  async createPortalSession(customerId: string) {
+    return this.stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${config.fallbackUrl}`,
+    });
+  }
+
   async cancelSubscription(subscriptionId: string) {
     return this.stripe.subscriptions.cancel(subscriptionId);
   }
@@ -41,13 +48,6 @@ export class StripeService {
 
   async retrieveSession(sessionId: string) {
     return this.stripe.checkout.sessions.retrieve(sessionId);
-  }
-
-  async createPortalSession(customerId: string) {
-    return this.stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: `${config.fallbackUrl}`,
-    });
   }
 
   verifyWebhookSignature(rawBody: Buffer, signature: string) {

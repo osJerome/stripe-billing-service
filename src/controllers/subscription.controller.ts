@@ -11,13 +11,14 @@ export class SubscriptionController {
 
   createSubscription = async (req: Request, res: Response) => {
     const tier = req.query.tier as string;
+    const fallbackUrl = req.query.fallbackUrl as string;
 
     if (!tier) {
       return res.status(400).send("Subscription tier not found");
     }
 
     try {
-      const session = await this.stripeService.createCheckoutSession(tier);
+      const session = await this.stripeService.createCheckoutSession(tier, fallbackUrl);
       if (session.url) {
         res.send({ session_id: session.id, url: session.url });
       } else {
