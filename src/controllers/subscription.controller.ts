@@ -9,6 +9,26 @@ export class SubscriptionController {
     this.stripeService = new StripeService();
   }
 
+  getCustomerDetails = async (req: Request, res: Response) => {
+    const customerId = req.params.customerId;
+
+    if (!customerId) {
+      return res.status(400).send("Customer ID is required");
+    }
+
+    try {
+      const customerDetails = await this.stripeService.getCustomerDetails(
+        customerId
+      );
+      res.json(customerDetails);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send("An error occurred while retrieving customer details");
+    }
+  };
+
   createSubscription = async (req: Request, res: Response) => {
     const tier = req.query.tier as string;
     const fallbackUrl = req.query.fallbackUrl as string;
@@ -18,7 +38,10 @@ export class SubscriptionController {
     }
 
     try {
-      const session = await this.stripeService.createCheckoutSession(tier, fallbackUrl);
+      const session = await this.stripeService.createCheckoutSession(
+        tier,
+        fallbackUrl
+      );
       if (session.url) {
         res.send({ session_id: session.id, url: session.url });
       } else {

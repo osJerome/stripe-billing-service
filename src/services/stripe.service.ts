@@ -10,14 +10,21 @@ export class StripeService {
     });
   }
 
-  async createCheckoutSession(tier: string, fallbackUrl?: string) {
+  async getCustomerDetails(customerId: string) {
+    return this.stripe.customers.retrieve(customerId, {
+      expand: ["subscriptions", "invoice_settings.default_payment_method"],
+    });
+  }
+
+  async createCheckoutSession(tier: string, fallbackUrl: string) {
     const priceId = this.getPriceIdForTier(tier);
     if (!priceId) throw new Error("Invalid subscription tier");
 
     return this.stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${config.baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      // success_url: `${config.baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${fallbackUrl || config.fallbackUrl}`,
       cancel_url: fallbackUrl || config.fallbackUrl,
     });
   }

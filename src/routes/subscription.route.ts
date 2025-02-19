@@ -7,6 +7,7 @@ const router = Router();
 const subscriptionController = new SubscriptionController();
 const webhookMiddleware = new WebhookMiddleware();
 
+router.get("/customers/:customerId", subscriptionController.getCustomerDetails);
 router.get("/subscribe", subscriptionController.createSubscription);
 router.get("/success", subscriptionController.handleSuccess);
 router.get(
